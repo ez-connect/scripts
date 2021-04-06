@@ -1,57 +1,66 @@
 #!/bin/bash
 #
-# Build server for linux amd64.
-# Usage: ./go_build.sh [name] [build_dir] [platform] [arch] [configs_dir]
+# Build a Golang application
 #
 
-# Default parameters
-appName=app     # The app name
-buildDir=build  # The output build
-platform=linux
-arch=amd64
-configsDir=
+# Constants
+OUTPUT_DIR='public' # default build dir
+PLATFORM='linux'
+ARCH='amd64'
 
-# Read arguments
-if [ ! -z "$1" ]; then
-  appName=$1
+# Help
+function help() {
+  echo 'Usage: ./go-build.sh [OPTION]... [NAME]'
+  echo 'Build a Golang application'
+  echo
+  echo 'Options:'
+  echo -e '  -o, --output \t output dir, default `build`'
+  echo -e '  -p, --platform \t platform target, default `linux`'
+  echo -e '  -a, --arch \t arch target, default `amd64`'
+  echo -e '  -h, --help \t print this help'
+}
+
+# Loop through arguments and process them
+for arg in "$@"
+do
+  case $arg in
+    -o=*|--output=*)
+      OUTPUT_DIR="${arg#*=}"
+      shift;;
+
+    -p=*|--platform=*)
+      PLATFORM="${arg#*=}"
+      shift;;
+
+    -a=*|--arch=*)
+      ARCH="${arg#*=}"
+      shift;;
+
+    -h|--help)
+      help
+      exit;;
+  esac
+done
+
+# Require name arg
+if [ -z "$1" ]; then
+  help
+  exit 1
 fi
 
-if [ ! -z "$2" ]; then
-  buildDir=$2
-fi
+# Application name
+name=$1
 
-if [ ! -z "$3" ]; then
-  platform=$3
-fi
-
-if [ ! -z "$4" ]; then
-  arch=$4
-fi
-
-if [ ! -z "$5" ]; then
-  configsDir=$5
-fi
-
-# Print parameters
-printf "App name:\t${appName}\n"
-printf "Build dir:\t${buildDir}\n"
-printf "Platform:\t${platform}\n"
-printf "Arch:\t\t${arch}\n"
-printf "Config dir:\t\t${configsDir}\n"
+echo "Build ${name}-${PLATFORM}-${ARCH}"
 
 # Clean build
-if [ -d ${buildDir} ]; then
-  rm -rf ${buildDir}
+if [ -d "${OUTPUT_DIR}" ]; then
+  rm -rf "${OUTPUT_DIR}"
 fi
 
 # Set go variables
-GOOS=${platform}
-GOARCH=${arch}
+GOOS=${PLATFORM}
+GOARCH=${ARCH}
 
 # Build
-go build -ldflags="-s -w" -o "${buildDir}/${appName}-${platform}-${arch}"
-
-# Copy configs
-if [ ! -z "${configsDir}" ]; then
-  cp -r "${configsDir}/" "${buildDir}/configs/"
-fi
+go build -ldflags="-s -w" -o "${OUTPUT_DIR}/${name}-${PLATFORM}-${ARCH}"
