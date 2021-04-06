@@ -12,7 +12,7 @@ function help() {
   echo './vps-deploy.sh name@example.com ./path/to/source ./path/to/destination'
 }
 
-# Has parameters
+# Required args
 if [ ! $# -eq 3 ]; then
   help
   exit 1

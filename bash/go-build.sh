@@ -10,7 +10,7 @@ ARCH='amd64'
 
 # Help
 function help() {
-  echo 'Usage: ./go-build.sh [OPTION]... [NAME]'
+  echo 'Usage: ./go-build.sh [OPTION]... NAME'
   echo 'Build a Golang application'
   echo
   echo 'Options:'
