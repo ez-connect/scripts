@@ -1,4 +1,4 @@
-const { Localization } = require('../../lib/localization');
+const { Localization } = require('../../lib/isml_localization');
 
 test('read properties', () => {
   Localization.readProperties('./src/__tests__', /_en_US.properties/);
@@ -11,4 +11,6 @@ test('read properties', () => {
       },
     }),
   );
+
+  Localization.patch('./src/__tests__', "Util.msg('$key', '$file')", /.*\.isml/);
 });

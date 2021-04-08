@@ -5,7 +5,7 @@ import { Util } from './util';
 class Localization {
   properties: { [key: string]: { [key: string]: string } } = {};
 
-  readProperties(dir: string, pattern?: RegExp): void {
+  readProperties(dir: string, pattern?: RegExp) {
     const names: string[] = [];
     Util.walk(names, dir, pattern);
 
@@ -28,6 +28,28 @@ class Localization {
         const page = path.basename(name).split('_')[0];
         this.properties[page] = data;
       }
+    }
+  }
+
+  patch(dir: string, holder: string, pattern?: RegExp) {
+    const names: string[] = [];
+    Util.walk(names, dir, pattern);
+
+    for (const name of names) {
+      // console.log('Read file:', name);
+      let data = fs.readFileSync(name, { encoding: 'utf-8' }).toString();
+      for (const file in this.properties) {
+        for (const key in this.properties[file]) {
+          let value = this.properties[file][key];
+          if (data.includes(value)) {
+            holder = holder.replace('$key', key);
+            holder = holder.replace('$file', file);
+            data = data.replace(value, holder);
+          }
+        }
+      }
+
+      fs.writeFileSync(name, data);
     }
   }
 }
