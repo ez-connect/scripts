@@ -14,7 +14,7 @@ test('read properties', () => {
 
   Localization.patch(
     './src/__tests__',
-    "Util.msg('$key', '$file')",
+    "${Util.msg('$key', '$file')}",
     /.*\.html/,
   );
 });

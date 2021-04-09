@@ -42,9 +42,9 @@ class Localization {
         for (const key in this.properties[file]) {
           let value = this.properties[file][key];
           if (data.includes(value)) {
-            holder = holder.replace('$key', key);
-            holder = holder.replace('$file', file);
-            data = data.replace(value, holder);
+            let replacer = holder.replace('$key', key);
+            replacer = replacer.replace('$file', file);
+            data = data.replace(new RegExp(value, 'g'), replacer);
           }
         }
       }
