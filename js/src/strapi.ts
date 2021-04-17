@@ -1,4 +1,6 @@
 const fetch = require("node-fetch");
+const fs = require('fs');
+const YAML = require('yaml');
 
 //
 // Strapi helper
@@ -54,10 +56,11 @@ class Strapi {
       }
 
       // Write
+      fs.writeFile("articles.yaml", YAML.stringify(items), 'utf-8', () => { });
     }
   }
 
-  async upload(collection: string) {}
+  async upload(collection: string) { }
 }
 
 const instance = new Strapi();
