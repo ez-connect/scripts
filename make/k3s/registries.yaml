@@ -1,0 +1,6 @@
+# /etc/rancher/k3s/registries.yaml
+configs:
+  "<registry>":
+    auth:
+      username: <username>
+      password: <password>

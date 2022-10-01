@@ -109,6 +109,10 @@ function install_typesense() {
 	mv typesense-server ${bin_path}/
 }
 
+###############################################################################
+# ERP
+###############################################################################
+
 function install() {
     if [ -z "$@" ]; then
         echo "No packages specified"
