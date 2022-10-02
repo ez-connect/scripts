@@ -25,6 +25,10 @@ function get_github_latest_tag() {
 	curl -s "https://api.github.com/repos/$1/tags" | grep -oE '"name": ".*"' | head -n 1 | sed -e 's/[name :|"]//g'
 }
 
+function github_tag_to_version() {
+	echo $1 | sed 's/v//'
+}
+
 # -----------------------------------------------------------------------------
 # Kubernetes
 # -----------------------------------------------------------------------------
@@ -44,7 +48,7 @@ function install_helm() {
 # gohugo
 function install_hugo() {
 	tag=$(get_github_latest_tag gohugoio/hugo)
-	version=$(echo ${tag} | sed 's/v//')
+	version=$(get_github_version ${tag})
 	echo "Version=${tag}"
 
     curl -Lo hugo.tar.gz "https://github.com/gohugoio/hugo/releases/download/${tag}/hugo_extended_${version}_Linux-64bit.tar.gz"
@@ -60,7 +64,7 @@ function install_hugo() {
 # -----------------------------------------------------------------------------
 function install_pg_jobmon() {
 	tag=$(get_github_latest_tag omniti-labs/pg_jobmon)
-	version=$(echo ${tag} | sed 's/v//')
+	version=$(github_tag_to_version ${tag})
 
 	curl -Lo pg_jobmon.tar.gz "https://github.com/omniti-labs/pg_jobmon/archive/refs/tags/${tag}.tar.gz"
 	tar -xf pg_jobmon.tar.gz
@@ -73,7 +77,7 @@ function install_pg_jobmon() {
 
 function install_pg_partman() {
 	tag=$(get_github_latest_tag pgpartman/pg_partman)
-	version=$(echo ${tag} | sed 's/v//')
+	version=$(github_tag_to_version ${tag})
 
     curl -Lo pg_partman.tar.gz "https://github.com/pgpartman/pg_partman/archive/refs/tags/${tag}.tar.gz"
     tar -x -f pg_partman.tar.gz
@@ -98,7 +102,7 @@ function install_pg_cron() {
 # -----------------------------------------------------------------------------
 function install_typesense() {
 	tag=$(get_github_latest_tag typesense/typesense)
-	version=$(echo ${tag} | sed 's/v//')
+	version=$(github_tag_to_version ${tag})
 
 	echo "Version=${tag}"
 
