@@ -16,6 +16,17 @@ function github_tag_to_version() {
 }
 
 # -----------------------------------------------------------------------------
+# Required packages
+# -----------------------------------------------------------------------------
+function install_linux_packages() {
+	sudo apt install make jq unzip
+}
+
+function install_osx_packages() {
+	brew make install jq
+}
+
+# -----------------------------------------------------------------------------
 # systemd
 # -----------------------------------------------------------------------------
 function create_systemd_service() {
@@ -25,17 +36,18 @@ function create_systemd_service() {
 	# Create a simple service
 	echo '[Unit]' > actions-runner.service
 	echo 'Description=GitHub runner' >> actions-runner.service
-	echo 'Requires=multi-user.target' >> actions-runner.service
+	echo >> actions-runner.service
 
 	echo '[Service]' >> actions-runner.service
 	echo 'Type=simple' >> actions-runner.service
 	echo 'Restart=always' >> actions-runner.service
 	echo 'RestartSec=5s' >> actions-runner.service
 	echo 'WorkingDirectory=/opt/actions-runner' >> actions-runner.service
-	echo 'ExecStart=/opt/actions-runner/run.sh' actions-runner.service
+	echo 'ExecStart=/opt/actions-runner/run.sh' >> actions-runner.service
 	echo 'StandardOutput=syslog' >> actions-runner.service
 	echo 'StandardError=syslog' >> actions-runner.service
 	echo 'SyslogIdentifier=runner' >> actions-runner.service
+	echo >> actions-runner.service
 
 	echo '[Install]' >> actions-runner.service
 	echo 'WantedBy=multi-user.target' >> actions-runner.service
@@ -56,26 +68,26 @@ function create_systemd_service() {
 function create_launchd_daemon() {
 	pushd /Library/LaunchDaemons/
 
-	echo '<?xml version="1.0" encoding="UTF-8"?>' > com.github.actions-runner.plist
-	echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> com.github.actions-runner.plist
-	echo '<plist version="1.0">' >> com.github.actions-runner.plist
-	echo '<dict>' >> com.github.actions-runner.plist
-	echo -e '\t<key>GitHub actions runner</key>' >> com.github.actions-runner.plist
-	echo -e '\t<string>com.github.actions.runner</string>' >> com.github.actions-runner.plist
-	echo -e '\t<key>ProgramArguments</key>' >> com.github.actions-runner.plist
-	echo -e '\t<array>' >> com.github.actions-runner.plist
-	echo -e '\t\t<string>/opt/actions-runner/run.sh</string>' >> com.github.actions-runner.plist
-	echo -e '\t</array>' >> com.github.actions-runner.plist
-	echo -e '\t<key>StandardOutPath</key>' >> com.github.actions-runner.plist
-	echo -e '\t<string>/tmp/actions-runner.stdout</string>' >> com.github.actions-runner.plist
-	echo -e '\t<key>StandardErrorPath</key>' >> com.github.actions-runner.plist
-	echo -e '\t<string>/tmp/actions-runner.stderr</string>' >> com.github.actions-runner.plist
-	echo -e '\t<key>RunAtLoad</key>' >> com.github.actions-runner.plist
-	echo -e '\t<true/>' >> com.github.actions-runner.plist
-	echo -e '\t<key>KeepAlive</key>' >> com.github.actions-runner.plist
-	echo -e '\t<true/>' >> com.github.actions-runner.plist
-	echo '</dict>' >> com.github.actions-runner.plist
-	echo '</plist>' >> com.github.actions-runner.plist
+	echo '<?xml version="1.0" encoding="UTF-8"?>' | sudo tee com.github.actions-runner.plist
+	echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' | sudo tee -a com.github.actions-runner.plist
+	echo '<plist version="1.0">' | sudo tee -a com.github.actions-runner.plist
+	echo '<dict>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<key>Label</key>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<string>com.github.actions.runner</string>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<key>ProgramArguments</key>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<array>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t\t<string>/opt/actions-runner/run.sh</string>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t</array>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<key>StandardOutPath</key>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<string>/tmp/actions-runner.stdout</string>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<key>StandardErrorPath</key>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<string>/tmp/actions-runner.stderr</string>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<key>RunAtLoad</key>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<true/>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<key>KeepAlive</key>' | sudo tee -a com.github.actions-runner.plist
+	echo '\t<true/>' | sudo tee -a com.github.actions-runner.plist
+	echo '</dict>' | sudo tee -a com.github.actions-runner.plist
+	echo '</plist>' | sudo tee -a com.github.actions-runner.plist
 
 	popd
 
@@ -93,7 +105,7 @@ cd /opt/actions-runner
 
 # Download the latest runner packagecreate_systemd_service
 read -p 'Which os (linux, osx, win) [linux]: ' input
-os=${os:-linux}
+os=${input:-linux}
 
 read -p 'Which architect (x64, arm64) [x64]: ' input
 architect=${input:-x64}
@@ -121,8 +133,10 @@ rm actions-runner.tar.gz
 # Startup
 # -----------------------------------------------------------------------------
 if [ "${os}" == "linux" ]; then
+	install_linux_packages
 	create_systemd_service
 elif [ "${os}" == "osx" ]; then
+	install_osx_packages
 	create_launchd_daemon
 elif [ "${os}" == "win" ]; then
 	echo 'Will be support windows services in the future'
