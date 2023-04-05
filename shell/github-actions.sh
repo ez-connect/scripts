@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/sh
 
 # GitHub self-hosted runner
 # https://github.com/organizations/<name>/settings/actions/runners/new
@@ -6,12 +6,12 @@
 # ---------------------------------------------------------
 # The latest tag on GitHub
 # ---------------------------------------------------------
-function get_github_latest_tag() {
+get_github_latest_tag() {
     # curl -s "https://api.github.com/repos/$1/tags" | grep -oP '"name": "\K[\w.]+' | head -n 1
 	curl -s "https://api.github.com/repos/$1/tags" | grep -oE '"name": ".*"' | head -n 1 | sed -e 's/[name :|"]//g'
 }
 
-function github_tag_to_version() {
+github_tag_to_version() {
 	echo $1 | sed 's/v//'
 }
 

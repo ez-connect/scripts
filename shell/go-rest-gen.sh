@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Generate sources use `go-rest-gen`
 # Usage: ./go-gen.sh

@@ -1,4 +1,4 @@
-# !/bin/sh
+#!/bin/sh
 
 # -----------------------------------------------------------------------------
 # A simple script to help to install packages for Alpine/Debian OCIs
@@ -24,11 +24,11 @@ echo "Install command: ${install_cmd}"
 # -----------------------------------------------------------------------------
 # The latest tag on GitHub
 # -----------------------------------------------------------------------------
-function get_github_latest_tag() {
+get_github_latest_tag() {
 	curl -s "https://api.github.com/repos/$1/tags" | grep -oE '"name": ".*"' | head -n 1 | sed -e 's/[name :|"]//g'
 }
 
-function github_tag_to_version() {
+github_tag_to_version() {
 	echo $1 | sed 's/v//'
 }
 
@@ -36,13 +36,13 @@ function github_tag_to_version() {
 # Kubernetes
 # -----------------------------------------------------------------------------
 # Kubectl
-function install_kubectl() {
+install_kubectl() {
   curl -Lo ${bin_path}/kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
   chmod +x ${bin_path}/kubectl
 }
 
 # Helm
-function install_helm() {
+install_helm() {
 	curl -s 'https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3' | sh
 }
 
@@ -50,7 +50,7 @@ function install_helm() {
 # Web
 # -----------------------------------------------------------------------------
 # gohugo
-function install_hugo() {
+install_hugo() {
 	tag=$(get_github_latest_tag gohugoio/hugo)
 	version=$(get_github_version ${tag})
 	echo "Version=${tag}"
@@ -66,7 +66,7 @@ function install_hugo() {
 # -----------------------------------------------------------------------------
 # Postgres
 # -----------------------------------------------------------------------------
-function install_pg_jobmon() {
+install_pg_jobmon {
 	tag=$(get_github_latest_tag omniti-labs/pg_jobmon)
 	version=$(github_tag_to_version ${tag})
 
@@ -79,7 +79,7 @@ function install_pg_jobmon() {
 	rm -rf "pg_jobmon-${version}"
 }
 
-function install_pg_partman() {
+install_pg_partman() {
 	tag=$(get_github_latest_tag pgpartman/pg_partman)
 	version=$(github_tag_to_version ${tag})
 
@@ -92,7 +92,7 @@ function install_pg_partman() {
   rm -rf "pg_partman-${version}"
 }
 
-function install_pg_cron() {
+install_pg_cron() {
 	package=postgresql-13-cron
 	if [ "$distro" = "alpine" ]; then
     	package=postgresql-pg_cron
@@ -104,7 +104,7 @@ function install_pg_cron() {
 # -----------------------------------------------------------------------------
 # Text search
 # -----------------------------------------------------------------------------
-function install_typesense() {
+install_typesense() {
 	tag=$(get_github_latest_tag typesense/typesense)
 	version=$(github_tag_to_version ${tag})
 
@@ -123,7 +123,7 @@ function install_typesense() {
 
 
 # -----------------------------------------------------------------------------
-function install() {
+install {
   if [ -z "$@" ]; then
     echo "No packages specified"
     exit 1

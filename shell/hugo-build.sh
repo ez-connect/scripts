@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Build a Hugo site
 #
@@ -8,7 +8,7 @@ readonly BUILD_DIR='public' # default Hugo output dir
 readonly USE_GZIP=0
 
 # Help
-function help() {
+help() {
   echo 'Usage: ./hugo-build.sh [-z|--gzip]'
   echo 'Build a hugo site'
   echo

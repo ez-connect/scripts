@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/sh
 
 # -----------------------------------------------------------------------------
 # WIP
@@ -28,7 +28,7 @@ feature_dirs=$(cat <<EOF
 EOF
 )
 
-function init_app() {
+init_app() {
 	path=$1
 	# mkdir -p $root_dirs
 	for dir in $base_dirs; do
@@ -48,7 +48,7 @@ function init_app() {
 # -----------------------------------------------------------------------------
 # New Flutter application
 # -----------------------------------------------------------------------------
-function create_app() {
+create_app() {
 	path=${1:-'app'}
 	flutter create ${path}
 	cd ${path}

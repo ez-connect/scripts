@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Deploy your app to a server
 #
 
 # Help
-function help() {
+help() {
   echo 'Usage:./vps-deploy.sh [SERVER] [SOURCE] [DESTINATION]'
   echo 'Deploy your app to server'
   echo

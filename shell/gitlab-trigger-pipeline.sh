@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Trigger a GitLab piple
 #
 
 # Help
-function help() {
+help() {
   echo 'Usage: ./gitlab-trigger-pipeline.sh PROJECT REF TOKEN'
   echo 'Trigger a GitLab piple'
   echo
